@@ -1,0 +1,40 @@
+{
+  "name": "nextfemjs",
+  "version": "0.0.1",
+  "description": "JavaScript wrapper for NextFEM API",
+  "main": "nextfem.js",
+  "scripts": {
+    "test": "node example.js",
+    "example:beam": "node -e \"const {exampleSimpleBeam} = require('./example.js'); exampleSimpleBeam();\"",
+    "example:frame": "node -e \"const {exampleFrame2D} = require('./example.js'); exampleFrame2D();\"",
+    "example:version": "node -e \"const {exampleGetVersion} = require('./example.js'); exampleGetVersion();\""
+  },
+  "keywords": [
+    "nextfem",
+    "structural-analysis",
+    "rest-api",
+    "finite-element",
+    "engineering",
+    "fem",
+    "fea"
+  ],
+  "files": [
+    "nextfem.js",
+    "example.js",
+    "README.md"
+  ],
+  "author": "NextFEM Support Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/NextFEM/NextFEMjs.git"
+  },
+  "engines": {
+    "node": ">=12.0.0"
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "browser": {
+    "fs": false
+  }
+}
