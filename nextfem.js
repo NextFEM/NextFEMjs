@@ -288,7 +288,7 @@ class NextFEMrest {
         Returns:
             True if successful
         '''*/
-        return sbool(await this.nfrest('GET', '/load/element/beamaddA/'+qt(elem)+'/'+str(direction)+'/'+qt(loadcase)+'/'+str(local)+'', null, dict([("values",json.dumps(values)),("positions",json.dumps(positions))])));}
+        return sbool(await this.nfrest('GET', '/load/element/beamaddA/'+qt(elem)+'/'+str(direction)+'/'+qt(loadcase)+'/'+str(local)+'', null, dict([("values",JSON.stringify(values)),("positions",JSON.stringify(positions))])));}
     async addBeamLoadU(elem, value, direction, loadcase, local=false) {
 /*        ''' Add a uniformly distributed load on the specified beam
         
@@ -512,7 +512,7 @@ class NextFEMrest {
         Returns:
             True if successful
         '''*/
-        return sbool(await this.nfrest('GET', '/section/add/fill/'+str(sectionID)+'/'+str(material)+'/'+str(doNotCenter)+'', null, dict([("x",json.dumps(x)),("y",json.dumps(y))])));}
+        return sbool(await this.nfrest('GET', '/section/add/fill/'+str(sectionID)+'/'+str(material)+'/'+str(doNotCenter)+'', null, dict([("x",JSON.stringify(x)),("y",JSON.stringify(y))])));}
     async addFloorPlane(name, type_, n1, n2, n3, n4='') {
 /*        ''' Add a floor plane load to the model
         
@@ -551,7 +551,7 @@ class NextFEMrest {
         Returns:
             True if successful
         '''*/
-        return sbool(await this.nfrest('GET', '/section/add/hole/'+str(sectionID)+'/'+str(material)+'/'+str(doNotCenter)+'', null, dict([("x",json.dumps(x)),("y",json.dumps(y))])));}
+        return sbool(await this.nfrest('GET', '/section/add/hole/'+str(sectionID)+'/'+str(material)+'/'+str(doNotCenter)+'', null, dict([("x",JSON.stringify(x)),("y",JSON.stringify(y))])));}
     async addIsoMaterial(name, E, ni, Wden, fk=0, conductivity=0, specificHeat=0, type_=0) {
 /*        ''' Add an isotropic material from scratch
         
@@ -579,7 +579,7 @@ class NextFEMrest {
         Returns:
             The ID assigned to the section
         '''*/
-        return parseInt(await this.nfrest('GET', '/section/add/layeredplanar', null, dict([("layerThicknesses",json.dumps(layerThicknesses)),("layerMaterials",json.dumps(layerMaterials))])));}
+        return parseInt(await this.nfrest('GET', '/section/add/layeredplanar', null, dict([("layerThicknesses",JSON.stringify(layerThicknesses)),("layerMaterials",JSON.stringify(layerMaterials))])));}
     async addLoadCase(name) {
 /*        ''' Add a loacase of a given name to the model
         
@@ -697,7 +697,7 @@ class NextFEMrest {
         Returns:
             True if successful, False otherwise. Beams are ordered
         '''*/
-        return sbool(await this.nfrest('GET', '/model/member/add', null, dict([("elems",json.dumps(elems))])));}
+        return sbool(await this.nfrest('GET', '/model/member/add', null, dict([("elems",JSON.stringify(elems))])));}
     async addMeshedWall(ID, origX, origY, origZ, div1, div2, plan, leng, hei, angle=0, tilt='0', nodeOffset=10000, isHorizontal=false) {
 /*        ''' Add a wall to the model meshed with quad elements
         
@@ -1107,7 +1107,7 @@ class NextFEMrest {
         Returns:
             The ID assigned to the section.
         '''*/
-        return parseInt(await this.nfrest('GET', '/section/add/bypoints/'+str(CF_tw)+'/'+str(CF_rc)+'/'+str(material)+'/'+str(doNotCenter)+'', null, dict([("x",json.dumps(x)),("y",json.dumps(y))])));}
+        return parseInt(await this.nfrest('GET', '/section/add/bypoints/'+str(CF_tw)+'/'+str(CF_rc)+'/'+str(material)+'/'+str(doNotCenter)+'', null, dict([("x",JSON.stringify(x)),("y",JSON.stringify(y))])));}
     async addSectionCover(sectionID, coverMat, coverThickness) {
 /*        ''' Add a section cover, e.g. for fire checking purposes
         
@@ -1145,7 +1145,7 @@ class NextFEMrest {
         Returns:
             The ID of the time series, -1 in case of errors
         '''*/
-        return parseInt(await this.nfrest('GET', '/function/add/'+str(type_)+'', null, dict([("x",json.dumps(Xlist)),("y",json.dumps(Ylist)),("units",units)])));}
+        return parseInt(await this.nfrest('GET', '/function/add/'+str(type_)+'', null, dict([("x",JSON.stringify(Xlist)),("y",JSON.stringify(Ylist)),("units",units)])));}
     async addSineFunction(frequency, phase, stp, duration, maxAmplitude, isGrowing=false, type_=0, units='') {
 /*        ''' Add a sine function to the model. It can be growing or not.
         
@@ -1173,7 +1173,7 @@ class NextFEMrest {
         Returns:
             The ID of the added elem
         '''*/
-        return await this.nfrest('GET', '/element/add/solid/'+str(mat)+'', null, dict([("nodes",json.dumps(nodes))]));}
+        return await this.nfrest('GET', '/element/add/solid/'+str(mat)+'', null, dict([("nodes",JSON.stringify(nodes))]));}
     async addSpring(n1, n2, propName) {
 /*        ''' Add a new 2-node spring to the model. Existing results will be deleted.
         
@@ -1580,7 +1580,7 @@ class NextFEMrest {
         Returns:
             False if not existing, True otherwise
         '''*/
-        return sbool(await this.nfrest('GET', '/group/assign/'+qt(name)+'/'+str(clear)+'', null, dict([("nodes",json.dumps(nodes)),("elements",json.dumps(elements))])));}
+        return sbool(await this.nfrest('GET', '/group/assign/'+qt(name)+'/'+str(clear)+'', null, dict([("nodes",JSON.stringify(nodes)),("elements",JSON.stringify(elements))])));}
     async changeDefSolverType(type_) {
 /*        ''' Change the system of equation type in standard solver
         
@@ -1708,7 +1708,7 @@ class NextFEMrest {
         Returns:
             True if checking is satisfied, False in any other case
         '''*/
-        return sbool(await this.nfrest('GET', '/res/check/element/'+qt(elem)+'/'+qt(lc)+'/'+qt(t)+'/'+str(stationType)+'/'+qt(verName)+'/'+str(savelog)+'/'+str(messages)+'', null, dict([("defaultParams",json.dumps(defaultParams)),("logPath",logPath)])));}
+        return sbool(await this.nfrest('GET', '/res/check/element/'+qt(elem)+'/'+qt(lc)+'/'+qt(t)+'/'+str(stationType)+'/'+qt(verName)+'/'+str(savelog)+'/'+str(messages)+'', null, dict([("defaultParams",JSON.stringify(defaultParams)),("logPath",logPath)])));}
     async checkElementRatio(elem, lc, t, stationType, verName, savelog=false, messages=false, defaultParams=null, logPath=null) {
 /*        ''' Check a single element in a model against results.
         
@@ -1726,7 +1726,7 @@ class NextFEMrest {
         Returns:
             A value less than 1 if the element satisfies checking. 100 is returned in case of error
         '''*/
-        return parseFloat(await this.nfrest('GET', '/res/check/elementRatio/'+qt(elem)+'/'+qt(lc)+'/'+qt(t)+'/'+str(stationType)+'/'+qt(verName)+'/'+str(savelog)+'/'+str(messages)+'', null, dict([("defaultParams",json.dumps(defaultParams)),("logPath",logPath)])));}
+        return parseFloat(await this.nfrest('GET', '/res/check/elementRatio/'+qt(elem)+'/'+qt(lc)+'/'+qt(t)+'/'+str(stationType)+'/'+qt(verName)+'/'+str(savelog)+'/'+str(messages)+'', null, dict([("defaultParams",JSON.stringify(defaultParams)),("logPath",logPath)])));}
     async checkElements(elems, lc, ts, stationType, verName, savelog=false, messages=false, defaultParams=null) {
 /*        ''' Check the specified elements in a model against results.
         
@@ -1743,7 +1743,7 @@ class NextFEMrest {
         Returns:
             True if all elements satisfy checking
         '''*/
-        return sbool(await this.nfrest('GET', '/res/check/elements/'+qt(lc)+'/'+qt(ts)+'/'+str(stationType)+'/'+qt(verName)+'/'+str(savelog)+'/'+str(messages)+'', null, dict([("defaultParams",json.dumps(defaultParams)),("elems",json.dumps(elems))])));}
+        return sbool(await this.nfrest('GET', '/res/check/elements/'+qt(lc)+'/'+qt(ts)+'/'+str(stationType)+'/'+qt(verName)+'/'+str(savelog)+'/'+str(messages)+'', null, dict([("defaultParams",JSON.stringify(defaultParams)),("elems",JSON.stringify(elems))])));}
     async checkElementsRatio(elems, lc, ts, stationType, verName, savelog=false, messages=false, defaultParams=null) {
 /*        ''' Check the specified elements in a model against results.
         
@@ -1760,7 +1760,7 @@ class NextFEMrest {
         Returns:
             A value less than 1 if all elements satisfy checking. 100 is returned in case of error
         '''*/
-        return parseFloat(await this.nfrest('GET', '/res/check/elementsRatio/'+qt(lc)+'/'+qt(ts)+'/'+str(stationType)+'/'+qt(verName)+'/'+str(savelog)+'/'+str(messages)+'', null, dict([("defaultParams",json.dumps(defaultParams)),("elems",json.dumps(elems))])));}
+        return parseFloat(await this.nfrest('GET', '/res/check/elementsRatio/'+qt(lc)+'/'+qt(ts)+'/'+str(stationType)+'/'+qt(verName)+'/'+str(savelog)+'/'+str(messages)+'', null, dict([("defaultParams",JSON.stringify(defaultParams)),("elems",JSON.stringify(elems))])));}
     async checkElementStation(elem, lc, t, stationAbsissa, verName, defaultParams=null, logPath=null, messages=false) {
 /*        ''' Check a single station in a model against results.
         
@@ -1777,7 +1777,7 @@ class NextFEMrest {
         Returns:
             A dictionary of string and decimal containing all the values used for checking and results
         '''*/
-        return des(await this.nfrest('GET', '/res/check/station/'+qt(elem)+'/'+qt(lc)+'/'+qt(t)+'/'+str(stationAbsissa)+'/'+qt(verName)+'/'+str(messages)+'', null, dict([("defaultParams",json.dumps(defaultParams)),("logPath",logPath)])));}
+        return des(await this.nfrest('GET', '/res/check/station/'+qt(elem)+'/'+qt(lc)+'/'+qt(t)+'/'+str(stationAbsissa)+'/'+qt(verName)+'/'+str(messages)+'', null, dict([("defaultParams",JSON.stringify(defaultParams)),("logPath",logPath)])));}
     async checkFreeNodes() {
 /*        ''' Check free nodes in the model
         
@@ -1809,7 +1809,7 @@ class NextFEMrest {
         Returns:
             True if checking is satisfied, False in any other case
         '''*/
-        return sbool(await this.nfrest('GET', '/res/check/model/'+qt(lc)+'/'+qt(ts)+'/'+str(stationType)+'/'+qt(verName)+'/'+str(savelog)+'/'+str(messages)+'', null, dict([("defaultParams",json.dumps(defaultParams))])));}
+        return sbool(await this.nfrest('GET', '/res/check/model/'+qt(lc)+'/'+qt(ts)+'/'+str(stationType)+'/'+qt(verName)+'/'+str(savelog)+'/'+str(messages)+'', null, dict([("defaultParams",JSON.stringify(defaultParams))])));}
     async checkNode(node, lc, ts, verName, savelog=false, messages=false, defaultParams=null, logPath=null) {
 /*        ''' Check a single node in a model against results.
         
@@ -1826,7 +1826,7 @@ class NextFEMrest {
         Returns:
             True if node satisfies checking, False otherwise
         '''*/
-        return sbool(await this.nfrest('GET', '/res/check/node/'+qt(node)+'/'+qt(lc)+'/'+qt(ts)+'/'+qt(verName)+'/'+str(savelog)+'/'+str(messages)+'', null, dict([("defaultParams",json.dumps(defaultParams)),("logPath",logPath)])));}
+        return sbool(await this.nfrest('GET', '/res/check/node/'+qt(node)+'/'+qt(lc)+'/'+qt(ts)+'/'+qt(verName)+'/'+str(savelog)+'/'+str(messages)+'', null, dict([("defaultParams",JSON.stringify(defaultParams)),("logPath",logPath)])));}
     async checkNodes(nodes, lc, ts, verName, savelog=false, messages=false, defaultParams=null) {
 /*        ''' Check specified nodes in a model against results.
         
@@ -1842,7 +1842,7 @@ class NextFEMrest {
         Returns:
             True if nodes satisfy checking, False otherwise
         '''*/
-        return sbool(await this.nfrest('GET', '/res/check/nodes/'+qt(lc)+'/'+qt(ts)+'/'+qt(verName)+'/'+str(savelog)+'/'+str(messages)+'', null, dict([("defaultParams",json.dumps(defaultParams)),("nodes",json.dumps(nodes))])));}
+        return sbool(await this.nfrest('GET', '/res/check/nodes/'+qt(lc)+'/'+qt(ts)+'/'+qt(verName)+'/'+str(savelog)+'/'+str(messages)+'', null, dict([("defaultParams",JSON.stringify(defaultParams)),("nodes",JSON.stringify(nodes))])));}
     async checkOverlappedElements() {
 /*        ''' Check overlapped elements in the model
         
@@ -1917,7 +1917,7 @@ class NextFEMrest {
         Returns:
             
         '''*/
-        return await this.nfrest('GET', '/model/colors/colorize/'+str(criterion)+'', null, dict([("excl",json.dumps(excl))]));}
+        return await this.nfrest('GET', '/model/colors/colorize/'+str(criterion)+'', null, dict([("excl",JSON.stringify(excl))]));}
     async compileDocX(dict_, tableDict=null, twoPasses=false) {
 /*        ''' Compile the open document for keyword substitution
         
@@ -1929,7 +1929,7 @@ class NextFEMrest {
         Returns:
             True
         '''*/
-        return sbool(await this.nfrest('POST', '/op/docx/compile/'+str(twoPasses)+'', tableDict, dict([("dict",json.dumps(dict_))])));}
+        return sbool(await this.nfrest('POST', '/op/docx/compile/'+str(twoPasses)+'', tableDict, dict([("dict",JSON.stringify(dict_))])));}
     async convertToMeshedSection(sectionID) {
 /*        ''' Convert an existing section to a new tria-meshed section. Remember to re-assign the new section to elements with assignSectionToElement
         
@@ -2084,7 +2084,7 @@ class NextFEMrest {
         Returns:
             An array containing the IDs of newly created Line elements
         '''*/
-        return des(await this.nfrest('GET', '/op/mesh/divideline', null, dict([("lines",json.dumps(lines)),("fractions",json.dumps(fractions))])));}
+        return des(await this.nfrest('GET', '/op/mesh/divideline', null, dict([("lines",JSON.stringify(lines)),("fractions",JSON.stringify(fractions))])));}
     async divideLineByNodes(line, nodes) {
 /*        ''' Divide existing Line elements by nodes
         
@@ -2095,7 +2095,7 @@ class NextFEMrest {
         Returns:
             True if successful
         '''*/
-        return sbool(await this.nfrest('GET', '/op/mesh/dividelinebynodes/'+qt(line)+'', null, dict([("nodes",json.dumps(nodes))])));}
+        return sbool(await this.nfrest('GET', '/op/mesh/dividelinebynodes/'+qt(line)+'', null, dict([("nodes",JSON.stringify(nodes))])));}
     async divideQuad(quadID, divX, divY) {
 /*        ''' Divide an existing Quad element
         
@@ -2245,7 +2245,7 @@ class NextFEMrest {
         Returns:
             Boolean
         '''*/
-        return sbool(await this.nfrest('GET', '/element/exportdxf', null, dict([("path",path),("elements",json.dumps(elements))])));}
+        return sbool(await this.nfrest('GET', '/element/exportdxf', null, dict([("path",path),("elements",JSON.stringify(elements))])));}
     async exportRCmemberDXF(path, member) {
 /*        ''' Export the selected RC member to DXF or DWG format. Rebars and hoops will be inserted in the drawing, if present
         
@@ -2649,7 +2649,7 @@ class NextFEMrest {
         Returns:
             A list of corner nodes, max 4
         '''*/
-        return des(await this.nfrest('GET', '/op/corners', null, dict([("nodes",json.dumps(nodes)),("lcs",json.dumps(lcs))])));}
+        return des(await this.nfrest('GET', '/op/corners', null, dict([("nodes",JSON.stringify(nodes)),("lcs",JSON.stringify(lcs))])));}
     async getCustomData(key) {
 /*        ''' Get custom data stored in the model.
         
@@ -2676,7 +2676,7 @@ class NextFEMrest {
         Returns:
             Array of bytes
         '''*/
-        return await this.nfrestB('GET', '/function/plotdata/'+str(transparent)+'/'+qt(name)+'/'+str(color)+'/'+str(useDots)+'', null, dict([("xseries",json.dumps(xseries)),("yseries",json.dumps(yseries)),("Xunits",Xunits),("Yunits",Yunits)]))}
+        return await this.nfrestB('GET', '/function/plotdata/'+str(transparent)+'/'+qt(name)+'/'+str(color)+'/'+str(useDots)+'', null, dict([("xseries",JSON.stringify(xseries)),("yseries",JSON.stringify(yseries)),("Xunits",Xunits),("Yunits",Yunits)]))}
     async getDefinedDesignMaterials() {
 /*        ''' Return a list of used design material IDs
         
@@ -3525,7 +3525,7 @@ class NextFEMrest {
         Returns:
             List of arrays of bytes
         '''*/
-        return await this.nfrestB('POST', '/function/plotmultipledata/'+str(transparent)+'/'+JSON.stringify(names)+'/'+qt(Xunits)+'/'+qt(Yunits)+'/'+str(showLegend)+'', plotList, dict([("colors",json.dumps(colors)),("useDots",json.dumps(useDots))]))}
+        return await this.nfrestB('POST', '/function/plotmultipledata/'+str(transparent)+'/'+JSON.stringify(names)+'/'+qt(Xunits)+'/'+qt(Yunits)+'/'+str(showLegend)+'', plotList, dict([("colors",JSON.stringify(colors)),("useDots",JSON.stringify(useDots))]))}
     async getNodalDisp(num, loadcase, time, direction) {
 /*        ''' Get nodal displacement from the selected loadcase and time
         
@@ -3674,7 +3674,7 @@ class NextFEMrest {
         Returns:
             Array of size 4 with bottom, right, top and left nodes
         '''*/
-        return des(await this.nfrest('GET', '/op/mesh/borders/'+str(tol)+'', null, dict([("nodes",json.dumps(nodes))])));}
+        return des(await this.nfrest('GET', '/op/mesh/borders/'+str(tol)+'', null, dict([("nodes",JSON.stringify(nodes))])));}
     async getOSprocedureName() {
 /*        ''' Return the NextFEM procedure file for OpenSees, without .tcl extension
         
@@ -4647,7 +4647,7 @@ class NextFEMrest {
         Returns:
             True if successful
         '''*/
-        return sbool(await this.nfrest('GET', '/op/mesh/mergeimportedlines', null, dict([("lines",json.dumps(lineIDs))])));}
+        return sbool(await this.nfrest('GET', '/op/mesh/mergeimportedlines', null, dict([("lines",JSON.stringify(lineIDs))])));}
     async mergeLines(lineIDs) {
 /*        ''' Merge selected Line elements
         
@@ -4657,7 +4657,7 @@ class NextFEMrest {
         Returns:
             True if successful
         '''*/
-        return sbool(await this.nfrest('GET', '/op/mesh/mergelines', null, dict([("lines",json.dumps(lineIDs))])));}
+        return sbool(await this.nfrest('GET', '/op/mesh/mergelines', null, dict([("lines",JSON.stringify(lineIDs))])));}
     async mergeModelData(modeldata) {
 /*        ''' Merge a new model to the existing one
         
@@ -4701,7 +4701,7 @@ class NextFEMrest {
         Returns:
             An array containing the IDs of newly created Tria elements
         '''*/
-        return des(await this.nfrest('GET', '/op/mesh/tria/'+str(maxTriaArea)+'/'+str(useAllNodes)+'/'+str(belt)+'/'+str(useQuad)+'/'+str(minAngle)+'', null, dict([("filled",json.dumps(filledContour)),("empty",json.dumps(emptyContour))])));}
+        return des(await this.nfrest('GET', '/op/mesh/tria/'+str(maxTriaArea)+'/'+str(useAllNodes)+'/'+str(belt)+'/'+str(useQuad)+'/'+str(minAngle)+'', null, dict([("filled",JSON.stringify(filledContour)),("empty",JSON.stringify(emptyContour))])));}
     async meshAreaTriaMulti(filledContour, emptyContour, maxTriaArea, useAllNodes=false, belt=0, useQuad=false, minAngle=20) {
 /*        ''' Mesh planar areas with triangular or quadrilateral elements. This function has to be used when defined more than one hole per meshed region.
         
@@ -4717,7 +4717,7 @@ class NextFEMrest {
         Returns:
             An array containing the IDs of newly created Tria elements
         '''*/
-        return des(await this.nfrest('GET', '/op/mesh/triamulti/'+str(maxTriaArea)+'/'+str(useAllNodes)+'/'+str(belt)+'/'+str(useQuad)+'/'+str(minAngle)+'', null, dict([("filled",json.dumps(filledContour)),("empty",json.dumps(emptyContour))])));}
+        return des(await this.nfrest('GET', '/op/mesh/triamulti/'+str(maxTriaArea)+'/'+str(useAllNodes)+'/'+str(belt)+'/'+str(useQuad)+'/'+str(minAngle)+'', null, dict([("filled",JSON.stringify(filledContour)),("empty",JSON.stringify(emptyContour))])));}
     async meshQuad2Wall(quadIDs, isHorizontal=false) {
 /*        ''' Mesh and group into wall a single quad element.
         
@@ -4728,7 +4728,7 @@ class NextFEMrest {
         Returns:
             True if successful
         '''*/
-        return sbool(await this.nfrest('GET', '/op/mesh/quad2wall/'+str(isHorizontal)+'', null, dict([("quadIDs",json.dumps(quadIDs))])));}
+        return sbool(await this.nfrest('GET', '/op/mesh/quad2wall/'+str(isHorizontal)+'', null, dict([("quadIDs",JSON.stringify(quadIDs))])));}
     async ModelToSection(openModelPath='') {
 /*        ''' Write a section from a thermal model made with planar elements
         
@@ -4752,7 +4752,7 @@ class NextFEMrest {
         Returns:
             Boolean
         '''*/
-        return sbool(await this.nfrest('GET', '/op/mesh/movenodes/'+str(displX)+'/'+str(displY)+'/'+str(displZ)+'/'+str(absolutePosition)+'', null, dict([("nodes",json.dumps(nodes))])));}
+        return sbool(await this.nfrest('GET', '/op/mesh/movenodes/'+str(displX)+'/'+str(displY)+'/'+str(displZ)+'/'+str(absolutePosition)+'', null, dict([("nodes",JSON.stringify(nodes))])));}
     async newModel() {
 /*        ''' Clear model
         
@@ -4948,7 +4948,7 @@ class NextFEMrest {
         Returns:
             True if successful, False otherwise
         '''*/
-        return sbool(await this.nfrest('DELETE', '/model/member/elems/'+qt(member)+'', null, dict([("elems",json.dumps(elems))])));}
+        return sbool(await this.nfrest('DELETE', '/model/member/elems/'+qt(member)+'', null, dict([("elems",JSON.stringify(elems))])));}
     async removeFloorLoad(name) {
 /*        ''' Remove the specified floor load type
         
@@ -5260,7 +5260,7 @@ class NextFEMrest {
         Returns:
             True if successful
         '''*/
-        return sbool(await this.nfrest('GET', '/op/mesh/rotatenodes/'+str(axisX)+'/'+str(axisY)+'/'+str(axisZ)+'/'+str(angle)+'', null, dict([("nodes",json.dumps(nodes))])));}
+        return sbool(await this.nfrest('GET', '/op/mesh/rotatenodes/'+str(axisX)+'/'+str(axisY)+'/'+str(axisZ)+'/'+str(angle)+'', null, dict([("nodes",JSON.stringify(nodes))])));}
     async RunLoadCase(loadcase, outOfProc=false, noWindow=false) {
 /*        ''' Run a single loadcase
         
@@ -5378,7 +5378,7 @@ class NextFEMrest {
         Returns:
             Boolean
         '''*/
-        return sbool(await this.nfrest('GET', '/op/mesh/scalenodes/'+str(scaleX)+'/'+str(scaleY)+'/'+str(scaleZ)+'/'+str(scaleCenterX)+'/'+str(scaleCenterY)+'/'+str(scaleCenterZ)+'', null, dict([("nodes",json.dumps(nodes))])));}
+        return sbool(await this.nfrest('GET', '/op/mesh/scalenodes/'+str(scaleX)+'/'+str(scaleY)+'/'+str(scaleZ)+'/'+str(scaleCenterX)+'/'+str(scaleCenterY)+'/'+str(scaleCenterZ)+'', null, dict([("nodes",JSON.stringify(nodes))])));}
     async SectionToModel(sectionID, saveModelPath='') {
 /*        ''' Write model of a section, meshed with Tria elements, typically for thermal analysis
         
@@ -5502,7 +5502,7 @@ class NextFEMrest {
         Returns:
             Boolean value
         '''*/
-        return sbool(await this.nfrest('GET', '/loadcase/setcfactors/'+str(gG)+'/'+str(gQ)+'/'+str(gSW)+'', null, dict([("psiVar",json.dumps(psiVar)),("psiWind",json.dumps(psiWind)),("psiSnow",json.dumps(psiSnow))])));}
+        return sbool(await this.nfrest('GET', '/loadcase/setcfactors/'+str(gG)+'/'+str(gQ)+'/'+str(gSW)+'', null, dict([("psiVar",JSON.stringify(psiVar)),("psiWind",JSON.stringify(psiWind)),("psiSnow",JSON.stringify(psiSnow))])));}
     async setCompositeBeam(ID, MposFactor=-1, MnegFactor=-1) {
 /*        ''' Set composite section beam properties
         
@@ -5629,7 +5629,7 @@ class NextFEMrest {
         Returns:
             True if successful, False if the cannot be assigned. End releases cannot be assigned to beams with flexural hinges.
         '''*/
-        return sbool(await this.nfrest('POST', '/element/beamendrelease/'+qt(beamID)+'/'+qt(node)+'/'+str(useStiffness)+'', null, dict([("DOFmask",json.dumps(DOFmask))])));}
+        return sbool(await this.nfrest('POST', '/element/beamendrelease/'+qt(beamID)+'/'+qt(node)+'/'+str(useStiffness)+'', null, dict([("DOFmask",JSON.stringify(DOFmask))])));}
     async setEnvelope(name, loadcase, factor, type_=0, servType=0) {
 /*        ''' Set an envelope combination from an existing loadcase. It can be called multiple times. If the loadcase is already in combination, change its factor.
         
@@ -5698,7 +5698,7 @@ class NextFEMrest {
         Returns:
             Boolean value
         '''*/
-        return sbool(await this.nfrest('POST', '/function/gendata/'+str(funcID)+'', null, dict([("data",json.dumps(data))])));}
+        return sbool(await this.nfrest('POST', '/function/gendata/'+str(funcID)+'', null, dict([("data",JSON.stringify(data))])));}
     async setLanguage(code) {
 /*        ''' Set language code
         
@@ -5963,7 +5963,7 @@ class NextFEMrest {
         Returns:
             True if successful
         '''*/
-        return sbool(await this.nfrest('PUT', '/op/mesh/rigiddiaph/'+str(constraintType)+'/'+qt(masterNode)+'/'+str(restrainZMaster)+'', null, dict([("nodesList",json.dumps(nodesList))])));}
+        return sbool(await this.nfrest('PUT', '/op/mesh/rigiddiaph/'+str(constraintType)+'/'+qt(masterNode)+'/'+str(restrainZMaster)+'', null, dict([("nodesList",JSON.stringify(nodesList))])));}
     async setRigidLink(n1, n2) {
 /*        ''' Set a rigid link between two nodes.
         
@@ -5986,7 +5986,7 @@ class NextFEMrest {
         Returns:
             True if successful
         '''*/
-        return sbool(await this.nfrest('POST', '/element/beamendoffset/'+qt(beamID)+'/'+str(isAbsLength)+'', null, dict([("values",json.dumps(values))])));}
+        return sbool(await this.nfrest('POST', '/element/beamendoffset/'+qt(beamID)+'/'+str(isAbsLength)+'', null, dict([("values",JSON.stringify(values))])));}
     async setSectionAngle(ID, a) {
 /*        ''' Set the rotation angle for a beam section.
         
@@ -6121,7 +6121,7 @@ class NextFEMrest {
         Returns:
             True if successful
         '''*/
-        return sbool(await this.nfrest('GET', '/section/set/shearreinfrc/'+str(ID)+'', null, dict([("data",json.dumps(data))])));}
+        return sbool(await this.nfrest('GET', '/section/set/shearreinfrc/'+str(ID)+'', null, dict([("data",JSON.stringify(data))])));}
     async setShellEndRelease(ID, node, DOFmask) {
 /*        ''' Set end release for shell element
         
@@ -6133,7 +6133,7 @@ class NextFEMrest {
         Returns:
             True if successful
         '''*/
-        return sbool(await this.nfrest('POST', '/element/shellendrelease/'+qt(ID)+'/'+qt(node)+'', null, dict([("DOFmask",json.dumps(DOFmask))])));}
+        return sbool(await this.nfrest('POST', '/element/shellendrelease/'+qt(ID)+'/'+qt(node)+'', null, dict([("DOFmask",JSON.stringify(DOFmask))])));}
     async setSpringLocalAxes(name, x1, y1, z1, x2, y2, z2) {
 /*        ''' Set local axes in the selected spring property
         
@@ -6201,7 +6201,7 @@ class NextFEMrest {
         Returns:
             Name of the newly created wall group
         '''*/
-        return await this.nfrest('GET', '/element/walls/set/'+str(rotate90)+'/'+str(isSlab)+'', null, dict([("elems",json.dumps(elems))]));}
+        return await this.nfrest('GET', '/element/walls/set/'+str(rotate90)+'/'+str(isSlab)+'', null, dict([("elems",JSON.stringify(elems))]));}
     async showViewport(path, width=600, height=400) {
 /*        ''' Open the viewport showing the model in path. REST version only against local instance of NextFEM Designer
         
