@@ -4035,6 +4035,14 @@ class NextFEMrest {
             A list of arrays of double (size 2) with resisting moment vs. curvature (1/units of length)
         '''*/
         return des(await this.nfrest('GET', '/op/sectioncalc/momentcurvature/'+str(sectionID)+'/'+str(N)+'/'+str(Mzz)+'/'+str(Myy)+'/'+str(npts)+'/'+str(Nserv)+'/'+str(Mzzserv)+'/'+str(Myyserv)+'', null, null));}
+    async getSelfWeight() {
+/*        ''' Get the loadcase name hosting self-weight
+        
+        
+        Returns:
+            
+        '''*/
+        return await this.nfrest('GET', '/load/getsw', null, null);}
     async getSeparator() {
 /*        ''' Returns separator used by the program
         
@@ -6327,7 +6335,6 @@ class NextFEMrest {
     get isRemote() { return this.nfrest('GET', 'na')};
     get lineColor() { return this.nfrest('GET', '/model/colors/line')};
     set lineColor(value) { return this.nfrest('POST', '/model/colors/line', {heads: {val: String(value)}}) };
-    get loading() { return this.nfrest('GET', '')};
     get massColor() { return this.nfrest('GET', '/model/colors/mass')};
     set massColor(value) { return this.nfrest('POST', '/model/colors/mass', {heads: {val: String(value)}}) };
     get materialsID() { return this.nfrest('GET', '/materials')};
