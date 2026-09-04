@@ -648,22 +648,6 @@ class NextFEMrest {
         Returns:
             Bar is added if area is bigger of the eventual bar in the same position. To avoid this, clear rebar prior to use this command
         '''*/
-        return sbool(await this.nfrest('GET', '/section/rebar/long/'+qt(sectionID)+'/'+str(X)+'/'+str(Y)+'/'+str(area)+'/'+str(matID)+'/'+str(rectBase)+'/'+str(strandTens)+'', null, null));}
-    async addLongitRebarInSection(sectionID, X, Y, area, matID, rectBase=0, strandTens=0) {
-/*        ''' Add a longitudinal bar to a section
-        
-        Args:
-            sectionID: ID of the section
-            X: X coordinate in transversal section
-            Y: Y coordinate in transversal section
-            area: Area of the rebar
-            matID: ID of the associated design material
-            rectBase (optional): Optional. Rectangular width if layer is added instead of bar
-            strandTens (optional): Optional. Tension for strand
-
-        Returns:
-            Bar is added if area is bigger of the eventual bar in the same position. To avoid this, clear rebar prior to use this command
-        '''*/
         return sbool(await this.nfrest('GET', '/section/rebar/long/'+str(sectionID)+'/'+str(X)+'/'+str(Y)+'/'+str(area)+'/'+str(matID)+'/'+str(rectBase)+'/'+str(strandTens)+'', null, null));}
     async addLSection(Lz, Ly, tw, tf1) {
 /*        ''' Add a new beam L section to the model.
@@ -1072,16 +1056,6 @@ class NextFEMrest {
             The ID assigned to the section.
         '''*/
         return parseInt(await this.nfrest('GET', '/section/add/rect/'+str(Lz)+'/'+str(Ly)+'', null, null));}
-    async addSectFromLib(name) {
-/*        ''' Add a section from library
-        
-        Args:
-            name: Name of the section
-
-        Returns:
-            ID of the added section, 0 if not found
-        '''*/
-        return parseInt(await this.nfrest('POST', '/section/add/fromlib', name, null));}
     async addSectFromLib(name, doNotCenter=false) {
 /*        ''' Add a section from library
         
@@ -1880,16 +1854,6 @@ class NextFEMrest {
         Returns:
             True is successful
         '''*/
-        return sbool(await this.nfrest('GET', '/section/rebar/clear/'+qt(ID)+'', null, null));}
-    async clearSectionRebar(ID) {
-/*        ''' Clear all section rebar
-        
-        Args:
-            ID: ID of the section
-
-        Returns:
-            True is successful
-        '''*/
         return sbool(await this.nfrest('GET', '/section/rebar/clear/'+str(ID)+'', null, null));}
     async clearSelection() {
 /*        ''' Clear selected items. REST version only against local instance of NextFEM Designer
@@ -1950,7 +1914,7 @@ class NextFEMrest {
         Returns:
             
         '''*/
-        return await this.nfrest('GET', '/units/convertunits/'+qt(length)+'/'+qt(force)+'', null, null);}
+        return sbool(await this.nfrest('GET', '/units/convertunits/'+qt(length)+'/'+qt(force)+'', null, null));}
     async convertValue(value, OldUnits, NewUnits) {
 /*        ''' Convert units of a value.
         
@@ -2794,13 +2758,13 @@ class NextFEMrest {
             A double array
         '''*/
         return des(await this.nfrest('GET', '/element/centroid/'+qt(ID)+'', null, null));}
-    async getElementChecks(ID, lc, time) {
-/*        ''' Get the checks stored in the model for the specified element
+    async getElementChecks(ID, lc, time='1') {
+/*        ''' Get the checks stored in the model for the specified element. Values returned are the ratios in the Verification table
         
         Args:
             ID: ID of the element
             lc: Name of the loadcase
-            time: Time
+            time (optional): Time
 
         Returns:
             Null if no checking are available
@@ -2890,12 +2854,12 @@ class NextFEMrest {
             
         '''*/
         return des(await this.nfrest('GET', '/element/rebar/size/'+qt(elem)+'/'+str(progr)+'', null, null));}
-    async getElementsChecks(lc, time) {
+    async getElementsChecks(lc, time='1') {
 /*        ''' Get the checks stored in the model for elements
         
         Args:
             lc: Name of the loadcase
-            time: Time
+            time (optional): Time
 
         Returns:
             Null if no checking are available
@@ -2941,6 +2905,20 @@ class NextFEMrest {
             
         '''*/
         return parseFloat(await this.nfrest('GET', '/element/volume/'+qt(ID)+'', null, null));}
+    async getElemIDsByProperty(matID='', sectID='', Etype=0, sprProp='', macroElem='') {
+/*        ''' Get a list of element IDs with the specified material, section, element type, spring property or macroelement
+        
+        Args:
+            matID (optional): Material ID
+            sectID (optional): Section ID
+            Etype (optional): Element type: 1 line, 2 tria, 3 quad, 4 hexa, 5 wedge, 6 tetra, spring 40, 20 line3, 21 quad8, 23 hexa20, 24 tetra10, 25 tria6, 26 wedge15
+            sprProp (optional): Name of spring property from getSpringProperties()
+            macroElem (optional): Name of the macroelement associated from getMacroelements()
+
+        Returns:
+            IDs of filtered elements
+        '''*/
+        return des(await this.nfrest('GET', '/element/filterbyproperty/'+qt(matID)+'/'+qt(sectID)+'/'+str(Etype)+'/'+qt(sprProp)+'/'+qt(macroElem)+'', null, null));}
     async getEndRelease(beamID) {
 /*        ''' Give beam releases ratios. If 0, the dof is completely released.
         
@@ -3359,6 +3337,14 @@ class NextFEMrest {
             Line=0, Line3=1, Quad1=2, Quad2=3, Quad3=4, masonryWall=5, rigidWall=6, -1 if not assigned
         '''*/
         return parseInt(await this.nfrest('GET', '/element/macro/'+qt(elemID)+'', null, null));}
+    async getMacroelements() {
+/*        ''' Get the list of available macroelements
+        
+        
+        Returns:
+            Names of available macroelements
+        '''*/
+        return des(await this.nfrest('GET', '/element/macros', null, null));}
     async getMaterialLibNames() {
 /*        ''' Return an array of string containing material library names from built-in library.
         
@@ -3432,16 +3418,6 @@ class NextFEMrest {
             
         '''*/
         return des(await this.nfrest('POST', '/res/maxmindispl/'+str(dir_)+'', nodes, null));}
-    async getMaxMinWoodArmerMoments(elementID) {
-/*        ''' Get maximum and minimun Wood-Armer moments from elements in the same group of the selected element
-        
-        Args:
-            elementID: One element in wall or slab group
-
-        Returns:
-            An array of length 2 containing max and min moments in this order: bottom dir.x, botton dir.y, top dir.x, top dir.y
-        '''*/
-        return des(await this.nfrest('GET', '/res/maxminwoodarmer/'+str(elementID)+'', null, null));}
     async getMaxMinWoodArmerMoments(groupName) {
 /*        ''' Get maximum and minimun Wood-Armer moments from elements in the same group of the selected element
         
@@ -3452,6 +3428,16 @@ class NextFEMrest {
             An array of length 2 containing max and min moments in this order: bottom dir.x, botton dir.y, top dir.x, top dir.y
         '''*/
         return des(await this.nfrest('GET', '/res/maxminwoodarmerg/'+qt(groupName)+'', null, null));}
+    async getMaxMinWoodArmerMomentsByElem(elementID) {
+/*        ''' Get maximum and minimun Wood-Armer moments from elements in the same group of the selected element
+        
+        Args:
+            elementID: One element in wall or slab group
+
+        Returns:
+            An array of length 2 containing max and min moments in this order: bottom dir.x, botton dir.y, top dir.x, top dir.y
+        '''*/
+        return des(await this.nfrest('GET', '/res/maxminwoodarmer/'+str(elementID)+'', null, null));}
     async getMaxNodeID() {
 /*        ''' Get the max free node ID
         
@@ -3578,13 +3564,13 @@ class NextFEMrest {
             The requested value. 0 if something went wrong.
         '''*/
         return parseFloat(await this.nfrest('GET', '/res/nodalstress/'+qt(num)+'/'+qt(loadcase)+'/'+qt(time)+'/'+qt(type_)+'', null, null));}
-    async getNodeChecks(ID, lc, time) {
+    async getNodeChecks(ID, lc, time='1') {
 /*        ''' Get the checks stored in the model for the specified node
         
         Args:
             ID: ID of the element
             lc: Name of the loadcase
-            time: Time
+            time (optional): Time
 
         Returns:
             Null if no checking are available
@@ -3631,12 +3617,12 @@ class NextFEMrest {
             The requested value as string. Empty in case of error
         '''*/
         return await this.nfrest('GET', '/node/prop/'+qt(ID)+'/'+qt(name)+'', null, null);}
-    async getNodesChecks(lc, time) {
+    async getNodesChecks(lc, time='1') {
 /*        ''' Get the checks stored in the model for nodes
         
         Args:
             lc: Name of the loadcase
-            time: Time
+            time (optional): Time
 
         Returns:
             Null if no checking are available
@@ -3841,7 +3827,7 @@ class NextFEMrest {
         
         Args:
             ID: ID of the section
-            name: Name of the property: name, code, type, Lx, Ly, b, h, t, etc.
+            name: Name of the property: name, code, material, type, Lx, Ly, b, h, t, etc.
 
         Returns:
             A string with the desired property
@@ -3879,21 +3865,6 @@ class NextFEMrest {
             A list of array of double values, each of size 2 (X,Y)
         '''*/
         return des(await this.nfrest('GET', '/res/check/plotsectiondomain/'+str(domainIndex)+'/'+str(domainType)+'/'+str(cleanResponseTolerance)+'', null, null));}
-    async getSectionResMoments(ID, station, calcType, N, Myy, Mzz) {
-/*        ''' Get flexural strength of a beam station by calculating neutral axis
-        
-        Args:
-            ID: ID of the element
-            station: ID of station, from 1 to 5
-            calcType: 0 plastic, 1 elastic, 2 thermal-plastic, 3 thermal-elastic, 4 elastic limit, 5 thermal-elastic limit
-            N: Axial force. Positive for tension
-            Myy: Moment around vertical section axis
-            Mzz: Moment around horizontal section axis
-
-        Returns:
-            A string with serialized results in JSON format
-        '''*/
-        return await this.nfrest('GET', '/op/sectioncalc/a/'+qt(ID)+'/'+str(station)+'/'+str(calcType)+'/'+str(N)+'/'+str(Myy)+'/'+str(Mzz)+'', null, null);}
     async getSectionResMoments(sectionID, materialID, calcType, N, Myy, Mzz) {
 /*        ''' Get flexural strength of a section by calculating neutral axis
         
@@ -3949,21 +3920,21 @@ class NextFEMrest {
             A check structure with results
         '''*/
         return await this.nfrest('GET', '/op/sectioncalc/d/'+str(sectionID)+'/'+str(calcType)+'/'+str(N)+'/'+str(Mzz)+'/'+str(Myy)+'/'+str(domainTp)+'/'+str(Nserv)+'/'+str(Mzzserv)+'/'+str(Myyserv)+'', null, dict([("saveImages",saveImages),("options",options)]));}
-    async getSectionResShear(sectionID, N=0, Mzz=0, Myy=0, Vy=0, Vz=0) {
-/*        ''' Get section shear resistance by automatically selecting checking rules for section material
+    async getSectionResMomentsOnElem(ID, station, calcType, N, Myy, Mzz) {
+/*        ''' Get flexural strength of a beam station by calculating neutral axis
         
         Args:
-            sectionID: ID of the section
-            N (optional): Optional. Axial force. Positive for tension
-            Mzz (optional): Optional. Moment around vertical section axis
-            Myy (optional): Optional. Moment around horizontal section axis
-            Vy (optional): Optional. Shear force in y direction
-            Vz (optional): Optional. Shear force in z direction
+            ID: ID of the element
+            station: ID of station, from 1 to 5
+            calcType: 0 plastic, 1 elastic, 2 thermal-plastic, 3 thermal-elastic, 4 elastic limit, 5 thermal-elastic limit
+            N: Axial force. Positive for tension
+            Myy: Moment around vertical section axis
+            Mzz: Moment around horizontal section axis
 
         Returns:
-            An array of size 2 with VrdY and VrdZ
+            A string with serialized results in JSON format
         '''*/
-        return des(await this.nfrest('GET', '/op/sectioncalc/shear/'+str(sectionID)+'/'+str(N)+'/'+str(Mzz)+'/'+str(Myy)+'/'+str(Vy)+'/'+str(Vz)+'', null, null));}
+        return await this.nfrest('GET', '/op/sectioncalc/a/'+qt(ID)+'/'+str(station)+'/'+str(calcType)+'/'+str(N)+'/'+str(Myy)+'/'+str(Mzz)+'', null, null);}
     async getSectionResShear(sectionID, verName, N=0, Mzz=0, Myy=0, Vy=0, Vz=0) {
 /*        ''' Get section shear resistance
         
@@ -4061,16 +4032,6 @@ class NextFEMrest {
             An array of size 2 with VrdY and VrdZ
         '''*/
         return des(await this.nfrest('POST', '/op/sectioncalc/shearres', dict, null));}
-    async getShearResFromDict(dict_) {
-/*        ''' Get section shear resistance from an already performed checking given in a dictionary of string, double
-        
-        Args:
-            dict_: Dictionary of string, double of an already performed checking
-
-        Returns:
-            An array of size 2 with VrdY and VrdZ
-        '''*/
-        return des(await this.nfrest('POST', '/op/sectioncalc/shearres', dict, null));}
     async getShellEndRelease(ID) {
 /*        ''' Give shell releases
         
@@ -4144,7 +4105,7 @@ class NextFEMrest {
             lc: The desired loadcase
 
         Returns:
-            Return nothing if empty results
+            Return empty list if no results
         '''*/
         return des(await this.nfrest('GET', '/res/periods/'+qt(lc)+'', null, null));}
     async getTotalMass(selectedNodes=null) {
@@ -4249,7 +4210,7 @@ class NextFEMrest {
             Boolean
         '''*/
         return sbool(await this.nfrest('GET', '/op/import/dxf', null, dict([("path",path)])));}
-    async importDXF(buffer) {
+    async importDXFbytes(buffer) {
 /*        ''' Import DXF from bytes
         
         Args:
@@ -4300,16 +4261,6 @@ class NextFEMrest {
             Boolean
         '''*/
         return sbool(await this.nfrest('GET', '/op/import/midasfile', null, dict([("path",path)])));}
-    async importMidas(model) {
-/*        ''' Import a Midas GEN/Civil model in text format
-        
-        Args:
-            model: Array of model lines
-
-        Returns:
-            Boolean
-        '''*/
-        return sbool(await this.nfrest('POST', '/op/import/midastext', model, null));}
     async importMidasResults(path) {
 /*        ''' Read results from Midas GEN/Civil tables, copied to a text file
         
@@ -4320,16 +4271,6 @@ class NextFEMrest {
             Boolean
         '''*/
         return sbool(await this.nfrest('GET', '/op/import/midasresult', null, dict([("path",path)])));}
-    async importMidasResults(text) {
-/*        ''' Read results from Midas GEN/Civil tables, copied to a text file
-        
-        Args:
-            text: Array of strings
-
-        Returns:
-            Boolean
-        '''*/
-        return sbool(await this.nfrest('POST', '/op/import/midasresulttext', text, null));}
     async importMidasResultsAPI(MAPIkey, resultsToImport) {
 /*        ''' Import Midas results from Midas GEN NX/Civil NX API
         
@@ -4341,6 +4282,26 @@ class NextFEMrest {
             True if successful
         '''*/
         return sbool(await this.nfrest('POST', '/op/import/midasresultapi', resultsToImport, dict([("mapi",MAPIkey)])));}
+    async importMidasResultsText(text) {
+/*        ''' Read results from Midas GEN/Civil tables, copied to a text file
+        
+        Args:
+            text: Array of strings
+
+        Returns:
+            Boolean
+        '''*/
+        return sbool(await this.nfrest('POST', '/op/import/midasresulttext', text, null));}
+    async importMidasText(model) {
+/*        ''' Import a Midas GEN/Civil model in text format
+        
+        Args:
+            model: Array of model lines
+
+        Returns:
+            Boolean
+        '''*/
+        return sbool(await this.nfrest('POST', '/op/import/midastext', model, null));}
     async importNodeElemFiles(path) {
 /*        ''' Import a node/elem set of file
         
@@ -4435,7 +4396,7 @@ class NextFEMrest {
             Always true
         '''*/
         return sbool(await this.nfrest('GET', '/op/import/sismicadset', null, dict([("path",path)])));}
-    async importSismicadSects_Combo(text) {
+    async importSismicadSects_ComboText(text) {
 /*        ''' Read section definitions and combinations from Sismicad tables, in TXT format
         
         Args:
@@ -4505,7 +4466,7 @@ class NextFEMrest {
             Boolean
         '''*/
         return sbool(await this.nfrest('GET', '/op/import/straus7result', null, dict([("path",path)])));}
-    async importStrausResults(text) {
+    async importStrausResultsText(text) {
 /*        ''' Read results from Straus7 tables, copied to a text file
         
         Args:
@@ -4563,6 +4524,14 @@ class NextFEMrest {
             Boolean
         '''*/
         return sbool(await this.nfrest('GET', '/element/iscolumn/'+qt(beamID)+'', null, null));}
+    async isEmptyModel() {
+/*        ''' Check if the model is empty
+        
+        
+        Returns:
+            True if the model is empty, False otherwise
+        '''*/
+        return sbool(await this.nfrest('GET', '/op/empty', null, null));}
     async isNodeLoaded(node) {
 /*        ''' Tell if the node is loaded or not
         
@@ -4768,7 +4737,7 @@ class NextFEMrest {
         Returns:
             
         '''*/
-        return await this.nfrest('GET', '/op/new', null, null);}
+        return sbool(await this.nfrest('GET', '/op/new', null, null));}
     async openIDEAcodeCheck() {
 /*        ''' Open IDEA CheckBot, if installed. Only for local instances of NextFEM Designer
         
@@ -4787,6 +4756,17 @@ class NextFEMrest {
             True if opening has been successful
         '''*/
         return sbool(await this.nfrest('GET', '/op/open', null, dict([("path",filename)])));}
+    async openModelFromBytes(bytes, modelFileName='model.nxf') {
+/*        ''' Open a model from bytes. The model can be in NXF or NXS format.
+        
+        Args:
+            bytes: Byte array containing the model data
+            modelFileName (optional): Optional name of the model file
+
+        Returns:
+            True if the model has been loaded correctly, False otherwise
+        '''*/
+        return sbool(await this.nfrest('', ''+JSON.stringify(bytes)+'/'+qt(modelFileName)+'', null, null));}
     async quad2tria(elem) {
 /*        ''' Transform a quad element into 2 tria elements
         
@@ -5717,7 +5697,7 @@ class NextFEMrest {
         Returns:
             
         '''*/
-        return await this.nfrest('POST', '/op/opt/lang/'+qt(code)+'', null, null);}
+        return sbool(await this.nfrest('POST', '/op/opt/lang/'+qt(code)+'', null, null));}
     async setLoadA(load) {
 /*        ''' Modify an existing load through an array, conforming to the one got via getLoadA
         
@@ -6055,16 +6035,6 @@ class NextFEMrest {
             1 if native propery has changes, 2 if custom property is added, 0 in case of error
         '''*/
         return parseInt(await this.nfrest('POST', '/section/prop/'+qt(ID)+'/'+qt(name)+'/'+str(value)+'', null, null));}
-    async setSectionRebarsToElements(ID) {
-/*        ''' Assign section rebars and stirrups in elements having the same section
-        
-        Args:
-            ID: ID of the section
-
-        Returns:
-            True is successful
-        '''*/
-        return sbool(await this.nfrest('GET', '/section/rebar/toelems/'+qt(ID)+'', null, null));}
     async setSectionRebarsToElements(ID) {
 /*        ''' Assign section rebars and stirrups in elements having the same section
         
