@@ -1488,6 +1488,14 @@ class NextFEMrest {
             True if successful
         '''*/
         return sbool(await this.nfrest('GET', '/load/lateralforces/'+str(thID)+'/'+qt(loadCaseX)+'/'+qt(loadCaseY)+'/'+str(propMasses)+'/'+str(T1)+'/'+str(ct)+'/'+str(lam)+'', null, null));}
+    async areColumns() {
+/*        ''' Returns all the vertical elements in the model
+        
+        
+        Returns:
+            Boolean
+        '''*/
+        return des(await this.nfrest('GET', '/element/arecolumns', null, null));}
     async areRebarsInsideSection(ID) {
 /*        ''' Check if all rebars are inside the section. Only the first fill figure is considered.
         
@@ -2316,7 +2324,7 @@ class NextFEMrest {
         Returns:
             True, even if the conversion fails
         '''*/
-        return sbool(await this.nfrest('GET', '/element/extrudebeambysect/'+str(useShells)+'', elemIDs, null));}
+        return sbool(await this.nfrest('POST', '/element/extrudebeambysect/'+str(useShells)+'', elemIDs, null));}
     async functionFromFile(filename, type_=9, units='') {
 /*        ''' Load a function from text file.
         
@@ -2535,6 +2543,20 @@ class NextFEMrest {
             An array containing a list of {abscissa,Vry,-Vry,Vrz,-Vrz}
         '''*/
         return des(await this.nfrest('GET', '/res/check/beamshearres/'+qt(elemID)+'/'+qt(loadcase)+'/'+qt(time)+'', null, null));}
+    async getBeamsForcesEnvelopeTable(elems, stationsMode, loadcases=null) {
+/*        ''' Get beam forces consistent envelope, as a table. Envelopes are made on specified loadcases, or on all result cases. Suitable for many combinations or for time-history analyses.
+        
+        Args:
+            elems: Element IDs
+            stationsMode: 0 for 5 stations, 1 for 3 stations, 2 for I and J, 3 for I only, 4 for J only, 5 for M only, 6 for 1/4, 7 for 3/4, 
+ 8 for M and 1/4 and 3/4, 9 for 1/4 and 3/4
+            loadcases (optional): Array of reference loadcases. As an alternative, to include all ultimate combinations, 
+ set only one item with "»1", "»2" for serviceability combos, "»3" for seismic combos
+
+        Returns:
+            A table as a list of string arrays.
+        '''*/
+        return des(await this.nfrest('POST', '/res/beamsforcesenvtable/'+str(stationsMode)+'', loadcases, dict([("elems",json.dumps(elems))])));}
     async getBillOfMaterials(selectedElements=null) {
 /*        ''' Get the bill of materials of the current model, or for the selected elements
         
@@ -2607,6 +2629,14 @@ class NextFEMrest {
             -1 if not defined, 0 Ultimate Limit State, 1 Seismic combination, 2 Serviceability, 3 Serviceability-Characteristic, 4 Serviceability-Frequent, 5 Serviceability-QuasiPermanent
         '''*/
         return parseInt(await this.nfrest('GET', '/loadcase/combo/designtype/'+qt(name)+'', null, null));}
+    async getCombinationFactors() {
+/*        ''' Returns a dictionary with combination coefficients set in the model, including partial ones.
+        
+        
+        Returns:
+            Dictionary of string, double
+        '''*/
+        return des(await this.nfrest('GET', '/loadcase/getcfactors', null, null));}
     async getCombinationsByDesignType(type_, servType=0) {
 /*        ''' Get an array of linear add combinations of the selected design type
         
@@ -2617,7 +2647,7 @@ class NextFEMrest {
         Returns:
             Array of strings
         '''*/
-        return des(await this.nfrest('GET', '/loadcases/descombos/designtype/'+str(type_)+'/'+str(servType)+'', null, null));}
+        return des(await this.nfrest('GET', '/loadcases/descombos/'+str(type_)+'/'+str(servType)+'', null, null));}
     async getConnectedElements(node, onlyOfType=-1) {
 /*        ''' Get all the elements connected to the specified node
         
@@ -3784,6 +3814,14 @@ class NextFEMrest {
             Return an array of size 2 with the relative length of the rigid offset for ends I and J, respectively
         '''*/
         return des(await this.nfrest('GET', '/element/beamendoffset/'+qt(beamID)+'', null, null));}
+    async getRSLoadCases() {
+/*        ''' Get the names of Response Spectrum analysis loadcases set in the model.
+        
+        
+        Returns:
+            Array of strings
+        '''*/
+        return des(await this.nfrest('GET', '/loadcases/rs', null, null));}
     async getSectionColor(ID) {
 /*        ''' Get the color of the selected section in RGB format
         
@@ -4079,14 +4117,6 @@ class NextFEMrest {
             
         '''*/
         return await this.nfrest('GET', '/load/getsw', null, null);}
-    async getSeparator() {
-/*        ''' Returns separator used by the program
-        
-        
-        Returns:
-            String value
-        '''*/
-        return await this.nfrest('GET', '/op/sep', null, null);}
     async getShearResFromDict(dict_) {
 /*        ''' Get section shear resistance from an already performed checking given in a dictionary of string, double
         
@@ -5497,7 +5527,7 @@ class NextFEMrest {
             rz: True if restrained
 
         Returns:
-            True if successful
+            True if node is found. Any previous restraint will be overwritten
         '''*/
         return sbool(await this.nfrest('GET', '/bc/set/'+qt(node)+'/'+str(x)+'/'+str(y)+'/'+str(z)+'/'+str(rx)+'/'+str(ry)+'/'+str(rz)+'', null, null));}
     async setBeamAngle(num, angle) {
