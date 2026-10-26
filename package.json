@@ -1,6 +1,6 @@
 {
   "name": "nextfemjs",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "JavaScript wrapper for NextFEM API",
   "main": "nextfem.js",
   "scripts": {
