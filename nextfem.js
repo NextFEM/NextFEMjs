@@ -948,7 +948,7 @@ class NextFEMrest {
         '''*/
         return parseInt(await this.nfrest('GET', '/section/add/planar/'+str(t)+'', null, null));}
     async addQuad(n1, n2, n3, n4, sect=0, mat=0) {
-/*        ''' Add a quad planar element to the model
+/*        ''' Add a quad shell element to the model
         
         Args:
             n1: Connected node 1
@@ -963,7 +963,7 @@ class NextFEMrest {
         '''*/
         return await this.nfrest('GET', '/element/add/quad/'+qt(n1)+'/'+qt(n2)+'/'+qt(n3)+'/'+qt(n4)+'/'+str(sect)+'/'+str(mat)+'', null, null);}
     async addQuadWithID(n1, n2, n3, n4, ID, sect=0, mat=0) {
-/*        ''' Add a quad planar element to the model with the desired ID
+/*        ''' Add a quad shell element to the model with the desired ID
         
         Args:
             n1: Connected node 1
@@ -1121,7 +1121,7 @@ class NextFEMrest {
         Returns:
             The ID of the time series, -1 in case of errors
         '''*/
-        return parseInt(await this.nfrest('GET', '/function/add/'+str(type_)+'/'+qt(name)+'', null, dict([("x",json.dumps(Xlist)),("y",json.dumps(Ylist)),("units",units)])));}
+        return parseInt(await this.nfrest('GET', '/function/add/'+str(type_)+'', null, dict([("x",json.dumps(Xlist)),("y",json.dumps(Ylist)),("units",units),("name",name)])));}
     async addSineFunction(frequency, phase, stp, duration, maxAmplitude, isGrowing=false, type_=0, units='') {
 /*        ''' Add a sine function to the model. It can be growing or not.
         
@@ -1297,7 +1297,7 @@ class NextFEMrest {
         '''*/
         return sbool(await this.nfrest('POST', '/load/element/tempdistadd/'+qt(elem)+'/'+qt(loadcase)+'', values, null));}
     async addTria(n1, n2, n3, sect=0, mat=0) {
-/*        ''' Add a tria planar element to the model
+/*        ''' Add a tria shell element to the model
         
         Args:
             n1: Connected node 1
@@ -1311,7 +1311,7 @@ class NextFEMrest {
         '''*/
         return await this.nfrest('GET', '/element/add/tria/'+qt(n1)+'/'+qt(n2)+'/'+qt(n3)+'/'+str(sect)+'/'+str(mat)+'', null, null);}
     async addTriaWithID(n1, n2, n3, ID, sect=0, mat=0) {
-/*        ''' Add a tria planar element to the model with the desired ID
+/*        ''' Add a tria shell element to the model with the desired ID
         
         Args:
             n1: Connected node 1
@@ -1745,14 +1745,14 @@ class NextFEMrest {
             A value less than 1 if all elements satisfy checking. 100 is returned in case of error
         '''*/
         return parseFloat(await this.nfrest('GET', '/res/check/elementsRatio/'+qt(lc)+'/'+qt(ts)+'/'+str(stationType)+'/'+qt(verName)+'/'+str(savelog)+'/'+str(messages)+'', null, dict([("defaultParams",json.dumps(defaultParams)),("elems",json.dumps(elems))])));}
-    async checkElementStation(elem, lc, t, stationAbsissa, verName, defaultParams=null, logPath=null, messages=false) {
+    async checkElementStation(elem, lc, t, stationNumber, verName, defaultParams=null, logPath=null, messages=false) {
 /*        ''' Check a single station in a model against results.
         
         Args:
             elem: ID of the element to be checked
             lc: Loadcase containing results
             t: Reference time for results. For linear analyses, use "1".
-            stationAbsissa: Absissa of the section to check for the element
+            stationNumber: 1 for I, 5 for J, 3 for M, 2 for 1/4, 4 for 3/4. Values outside range [1;5] are automatically corrected to extreme values (1 or 5)
             verName: Name of the checking to be used. E.g. "Steel EC3" or "EC2_Concrete". NVV files have underscore.
             defaultParams (optional): Optionally, parameters for checking
             logPath (optional): Path for logging. If empty (default), actual path is returned. If "no", no log is written
@@ -1761,7 +1761,7 @@ class NextFEMrest {
         Returns:
             A dictionary of string and decimal containing all the values used for checking and results
         '''*/
-        return des(await this.nfrest('GET', '/res/check/station/'+qt(elem)+'/'+qt(lc)+'/'+qt(t)+'/'+str(stationAbsissa)+'/'+qt(verName)+'/'+str(messages)+'', null, dict([("defaultParams",json.dumps(defaultParams)),("logPath",logPath)])));}
+        return des(await this.nfrest('GET', '/res/check/station/'+qt(elem)+'/'+qt(lc)+'/'+qt(t)+'/'+str(stationNumber)+'/'+qt(verName)+'/'+str(messages)+'', null, dict([("defaultParams",json.dumps(defaultParams)),("logPath",logPath)])));}
     async checkFreeNodes() {
 /*        ''' Check free nodes in the model
         
@@ -2327,19 +2327,20 @@ class NextFEMrest {
             True, even if the conversion fails
         '''*/
         return sbool(await this.nfrest('POST', '/element/extrudebeambysect/'+str(useShells)+'', elemIDs, null));}
-    async functionFromFile(filename, type_=9, units='') {
+    async functionFromFile(filename, type_=9, units='', name='') {
 /*        ''' Load a function from text file.
         
         Args:
             filename: Path of the text file containing function to load
             type_ (optional): 0 displacement TH, 1 velocity TH, 2 acceleration TH, 3 acceleration spectrum, 4 displacement spectrum, 5 lateral forces vs. height, 
  6 vertical forces vs. lenght, 7 time-temperature, 8 strength-temperature, 9 user type
-            units (optional): Units of measure for data in ordinate (Y)
+            units (optional): Optional. Units of measure for data in ordinate (Y)
+            name (optional): Optional. Name of the function
 
         Returns:
             The ID of the time series, -1 in case of errors
         '''*/
-        return parseInt(await this.nfrest('GET', '/function/fromfile/'+str(type_)+'', null, dict([("units",units),("path",filename)])));}
+        return parseInt(await this.nfrest('GET', '/function/fromfile/'+str(type_)+'', null, dict([("units",units),("path",filename),("name",name)])));}
     async generateFrame(baysX, baysY, sn, ddx, ddy, ddz, sx, sy, sz, matx, maty, matz, lc1='', lc2='', lc3='', Lval1=0, Lval2=0, Lval3=0, loadBeamX=false, rigidfloor=false) {
 /*        ''' Generate a spatial frame of desired characteristics
         
@@ -2691,7 +2692,7 @@ class NextFEMrest {
             False if the key was not found
         '''*/
         return await this.nfrest('GET', '/model/customdata/'+qt(key)+'', null, null);}
-    async getDataPlot(xseries, yseries, transparent, name='', Xunits='', Yunits='', color=0, useDots=true) {
+    async getDataPlot(xseries, yseries, transparent, name='', Xunits='', Yunits='', color=0, useDots=true, lineWidth=1, lineDashStyle=0) {
 /*        ''' Get plot of the given user data in a PNG image
         
         Args:
@@ -2703,12 +2704,14 @@ class NextFEMrest {
             Yunits (optional): Optional. Units for y axis
             color (optional): Optional. Default is 0 (black)
             useDots (optional): Optional. Default is false
+            lineWidth (optional): Optional. Default is 1 pt
+            lineDashStyle (optional): Optional. Default is 0 (solid), 1 dash, 2 dot, 3 dashdot
 
         Returns:
             Array of bytes
         '''*/
-        return await this.nfrestB('GET', '/function/plotdata/'+str(transparent)+'/'+qt(name)+'/'+str(color)+'/'+str(useDots)+'', null, dict([("xseries",json.dumps(xseries)),("yseries",json.dumps(yseries)),("Xunits",Xunits),("Yunits",Yunits)]))}
-    async getDataPlotly(xseries, yseries, transparent, name='', Xunits='', Yunits='', color=0, useDots=true) {
+        return await this.nfrestB('GET', '/function/plotdata/'+str(transparent)+'/'+qt(name)+'/'+str(color)+'/'+str(useDots)+'/'+str(lineWidth)+'/'+str(lineDashStyle)+'', null, dict([("xseries",json.dumps(xseries)),("yseries",json.dumps(yseries)),("Xunits",Xunits),("Yunits",Yunits)]))}
+    async getDataPlotly(xseries, yseries, transparent, name='', Xunits='', Yunits='', color=0, useDots=true, lineWidth=1, lineDashStyle=0) {
 /*        ''' Get plot of the given user data in JSON for Plotly
         
         Args:
@@ -2720,11 +2723,13 @@ class NextFEMrest {
             Yunits (optional): Optional. Units for y axis
             color (optional): Optional. Default is 0 (black)
             useDots (optional): Optional. Default is false
+            lineWidth (optional): Optional. Default is 1 pt
+            lineDashStyle (optional): Optional. Default is 0 (solid), 1 dash, 2 dot, 3 dashdot
 
         Returns:
             JSON for Plotly
         '''*/
-        return await this.nfrest('GET', '/function/plotlydata/'+str(transparent)+'/'+qt(name)+'/'+str(color)+'/'+str(useDots)+'', null, dict([("xseries",json.dumps(xseries)),("yseries",json.dumps(yseries)),("Xunits",Xunits),("Yunits",Yunits)]));}
+        return await this.nfrest('GET', '/function/plotlydata/'+str(transparent)+'/'+qt(name)+'/'+str(color)+'/'+str(useDots)+'/'+str(lineWidth)+'/'+str(lineDashStyle)+'', null, dict([("xseries",json.dumps(xseries)),("yseries",json.dumps(yseries)),("Xunits",Xunits),("Yunits",Yunits)]));}
     async getDefinedDesignMaterials() {
 /*        ''' Return a list of used design material IDs
         
@@ -3609,7 +3614,7 @@ class NextFEMrest {
             loadcase parameters is passed by reference, hence the selected loadcase is returned if loadcase is empty
         '''*/
         return parseInt(await this.nfrest('GET', '/res/modes/'+str(loadcase)+'', null, null));}
-    async getMultiplePlotlys(plotList, transparent=false, names=null, Xunits='', Yunits='', colors=null, useDots=null, showLegend=false) {
+    async getMultiplePlotlys(plotList, transparent=false, names=null, Xunits='', Yunits='', colors=null, useDots=null, showLegend=false, linesWidth=null, linesDashStyle=null) {
 /*        ''' Get plots of multiple series in JSON for Plotly
         
         Args:
@@ -3621,12 +3626,14 @@ class NextFEMrest {
             colors (optional): Optional. Array of plot colors
             useDots (optional): Optional. Array of boolean values for using dots in each plot
             showLegend (optional): Optional. True to enable graph legend
+            linesWidth (optional): Optional. Default is 1 pt
+            linesDashStyle (optional): Optional. Default is 0 (solid), 1 dash, 2 dot, 3 dashdot
 
         Returns:
             JSON for Plotly
         '''*/
-        return await this.nfrest('POST', '/function/plotlymultipledata/'+str(transparent)+'/'+JSON.stringify(names)+'/'+qt(Xunits)+'/'+qt(Yunits)+'/'+str(showLegend)+'', plotList, dict([("colors",json.dumps(colors)),("useDots",json.dumps(useDots))]));}
-    async getMultiplePlots(plotList, transparent=false, names=null, Xunits='', Yunits='', colors=null, useDots=null, showLegend=false) {
+        return await this.nfrest('POST', '/function/plotlymultipledata/'+str(transparent)+'/'+JSON.stringify(names)+'/'+qt(Xunits)+'/'+qt(Yunits)+'/'+str(showLegend)+'/'+JSON.stringify(linesWidth)+'/'+JSON.stringify(linesDashStyle)+'', plotList, dict([("colors",json.dumps(colors)),("useDots",json.dumps(useDots))]));}
+    async getMultiplePlots(plotList, transparent=false, names=null, Xunits='', Yunits='', colors=null, useDots=null, showLegend=false, linesWidth=null, linesDashStyle=null) {
 /*        ''' Get plots of multiple series in a single PNG image
         
         Args:
@@ -3638,11 +3645,13 @@ class NextFEMrest {
             colors (optional): Optional. Array of plot colors
             useDots (optional): Optional. Array of boolean values for using dots in each plot
             showLegend (optional): Optional. True to enable graph legend
+            linesWidth (optional): Optional. Default is 1 pt
+            linesDashStyle (optional): Optional. Default is 0 (solid), 1 dash, 2 dot, 3 dashdot
 
         Returns:
             List of arrays of bytes
         '''*/
-        return await this.nfrestB('POST', '/function/plotmultipledata/'+str(transparent)+'/'+JSON.stringify(names)+'/'+qt(Xunits)+'/'+qt(Yunits)+'/'+str(showLegend)+'', plotList, dict([("colors",json.dumps(colors)),("useDots",json.dumps(useDots))]))}
+        return await this.nfrestB('POST', '/function/plotmultipledata/'+str(transparent)+'/'+JSON.stringify(names)+'/'+qt(Xunits)+'/'+qt(Yunits)+'/'+str(showLegend)+'', plotList, dict([("colors",json.dumps(colors)),("useDots",json.dumps(useDots)),("linesWidth",json.dumps(linesWidth)),("linesDashStyle",json.dumps(linesDashStyle))]))}
     async getNodalDisp(num, loadcase, time, direction) {
 /*        ''' Get nodal displacement from the selected loadcase and time
         
@@ -6484,6 +6493,18 @@ class NextFEMrest {
             True if successful
         '''*/
         return sbool(await this.nfrest('GET', '/section/set/steel/'+str(ID)+'/'+str(SectionClass)+'/'+str(alphaLT)+'/'+str(alphay)+'/'+str(alphaz)+'/'+str(Jw)+'', null, null));}
+    async setTHforLoad(loadID, loadcase, funcID) {
+/*        ''' Set or remove the Time-History function associated to the specified load. GeneralDesign module license is required.
+        
+        Args:
+            loadID: ID of the load. Use getLoadsForNode or getLoadsForElement to get the proper loadID
+            loadcase: Name of the target loadcase
+            funcID: ID of the function. Use 0 to remove the setting for the selected loadID and loadcase
+
+        Returns:
+            True if successful
+        '''*/
+        return sbool(await this.nfrest('GET', '/function/setth/'+str(loadID)+'/'+qt(loadcase)+'/'+str(funcID)+'', null, null));}
     async setUnits(length, force) {
 /*        ''' Set units in the model
         
