@@ -599,7 +599,7 @@ class NextFEMrest {
             factor: Factor for the loadcase to add to the combination
 
         Returns:
-            True if successful
+            True if successful, False if name or loadcase does not exist as loadcases/combinations
         '''*/
         return sbool(await this.nfrest('GET', '/loadcase/combo/add/'+qt(name)+'/'+qt(loadcase)+'/'+str(factor)+'', null, null));}
     async addLoadCaseToTimeHistoryAnalysis(name, loadcase, factor, THid=-1) {
@@ -3087,6 +3087,14 @@ class NextFEMrest {
             The first period of the model
         '''*/
         return parseFloat(await this.nfrest('GET', '/res/firstmode/'+str(ct)+'/'+str(direction)+'', null, null));}
+    async getFlexibleDiaphragms() {
+/*        ''' Gives the dictionary of centroid node and nodes in flexible diaphragms
+        
+        
+        Returns:
+            Array of strings
+        '''*/
+        return des(await this.nfrest('GET', '/op/mesh/flexdiaph', null, null));}
     async getFloorLoadType(name) {
 /*        ''' Get a string describing the selected floor load type
         
@@ -4306,16 +4314,17 @@ class NextFEMrest {
             Array of strings
         '''*/
         return des(await this.nfrest('GET', '/loadcases/static', null, null));}
-    async getStoreyStiffnessTable(lc) {
+    async getStoreyStiffnessTable(lcX, lcY) {
 /*        ''' Get the storey stiffness table for a given loadcase
         
         Args:
-            lc: Name of the loadcase that contains a set of lateral forces, for each storey
+            lcX: Name of the loadcase that contains a set of lateral forces, for each storey, in X direction
+            lcY: Name of the loadcase that contains a set of lateral forces, for each storey, in Y direction
 
         Returns:
             Storey stiffness table as a list of list of string
         '''*/
-        return des(await this.nfrest('GET', '/model/storeystiff/'+qt(lc)+'', null, null));}
+        return des(await this.nfrest('GET', '/model/storeystiff/'+qt(lcX)+'/'+qt(lcY)+'', null, null));}
     async getSubsoilElements() {
 /*        ''' Get a list of elements having subsoil springs
         
@@ -5191,6 +5200,14 @@ class NextFEMrest {
             True if successful, False otherwise
         '''*/
         return sbool(await this.nfrest('DELETE', '/model/member/elems/'+qt(member)+'', null, dict([("elems",json.dumps(elems))])));}
+    async removeFlexibleDiaphragms() {
+/*        ''' Remove all the flexible floor constraints in the model.
+        
+        
+        Returns:
+            True if successful
+        '''*/
+        return sbool(await this.nfrest('DELETE', '/op/mesh/flexdiaph', null, null));}
     async removeFloorLoad(name) {
 /*        ''' Remove the specified floor load type
         
@@ -5514,6 +5531,18 @@ class NextFEMrest {
             True if successful
         '''*/
         return sbool(await this.nfrest('GET', '/op/mesh/rotatenodes/'+str(axisX)+'/'+str(axisY)+'/'+str(axisZ)+'/'+str(angle)+'', null, dict([("nodes",json.dumps(nodes))])));}
+    async RSloadsToLoadcase(lcSource, lcTarget, mode=0) {
+/*        ''' Add loads from an already run Response Spectrum loadcase to a static loadcase. Use removeAllLoadsForLoadcase before to use this command on a non-empty target loadcase.
+        
+        Args:
+            lcSource: Source ResponseSpectrum loadcase. If the case is not existing or not set as ResponseSpectrum or not already run, it returns false
+            lcTarget: Target static loadcase. If the case is not existing or not set as static, it returns false
+            mode (optional): Number of the mode to be considered, or 0 for all modes
+
+        Returns:
+            True if successful
+        '''*/
+        return sbool(await this.nfrest('GET', '/loadcase/rstolc/'+qt(lcSource)+'/'+qt(lcTarget)+'/'+str(mode)+'', null, null));}
     async RunLoadCase(loadcase, outOfProc=false, noWindow=false) {
 /*        ''' Run a single loadcase
         
@@ -5938,6 +5967,17 @@ class NextFEMrest {
             A list of loaded elements
         '''*/
         return des(await this.nfrest('GET', '/load/firepoint/'+qt(loadcase)+'/'+qt(fireNode)+'/'+str(targetTemp)+'/'+str(gradientY)+'/'+str(gradientZ)+'/'+str(tempAtten)+'/'+str(dontLoadUnder)+'/'+str(normalize)+'/'+str(cylindricalXY)+'', null, null));}
+    async setFlexibleDiaphragms(nodesList, name) {
+/*        ''' Set flexible diaphragms for selected nodes
+        
+        Args:
+            nodesList: Optional list containing nodes ID for the rigid floor. If not specified, all nodes are taken
+            name: Name as suffix of the group. Groups with already existing names will be overwritten
+
+        Returns:
+            True if successful
+        '''*/
+        return sbool(await this.nfrest('PUT', '/op/mesh/flexdiaph/'+qt(name)+'', null, dict([("nodesList",json.dumps(nodesList))])));}
     async setFloorLoad(name, loadcase, loadvalue, dirX, dirY, dirZ) {
 /*        ''' Add or modify floor load type
         
@@ -6370,7 +6410,7 @@ class NextFEMrest {
         '''*/
         return sbool(await this.nfrest('GET', '/section/rebar/toelems/'+str(ID)+'', null, null));}
     async setSeismicFloorEccentricity(thID, ct=0.05, lam=1) {
-/*        ''' Compute floor torque moments for accounting 5% eccentricity for center of mass of each rigid floor. Rigid diaphragms and masses are required.
+/*        ''' Compute floor torque moments for accounting 5% eccentricity for center of mass of each rigid floor. Rigid or flexible diaphragms and masses are required.
         
         Args:
             thID: ID of the spectrum function to be used as reference for total base shear
@@ -6658,14 +6698,14 @@ class NextFEMrest {
     get modeldata() { return this.nfrest('GET', '/model/data')};
     set modeldata(value) { return this.nfrest('POST', '/model/data', value)};
     get modeldatad() { return this.nfrest('GET', '/model/datad')};
-    set modeldatad(value) { return this.nfrest('POST', '/model/datad', {heads: {val: String(value)}}) };
+    set modeldatad(value) { return this.nfrest('POST', '/model/datad', value)};
     get modelName() { return this.nfrest('GET', '/model')};
     set modelName(value) { return this.nfrest('POST', '/model', {heads: {val: String(value)}}) };
     get modelPath() { return this.nfrest('GET', '/model/path')};
     get modelresults() { return this.nfrest('GET', '/model/results')};
     set modelresults(value) { return this.nfrest('POST', '/model/results', value)};
     get modelresultsd() { return this.nfrest('GET', '/model/resultsd')};
-    set modelresultsd(value) { return this.nfrest('POST', '/model/resultsd', {heads: {val: String(value)}}) };
+    set modelresultsd(value) { return this.nfrest('POST', '/model/resultsd', value)};
     get nodeColor() { return this.nfrest('GET', '/model/colors/node')};
     set nodeColor(value) { return this.nfrest('POST', '/model/colors/node', {heads: {val: String(value)}}) };
     get nodesList() { return this.nfrest('GET', '/nodes')};
